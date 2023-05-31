@@ -15,23 +15,45 @@ import shutil
 
 # from tensorflow.python.data.ops.dataset_ops import AUTOTUNE
 
-def load_dataset(input_files,rnd,batch_size_):
-    """
-    Load the tfrecord files
-    :params input_files: The path of input file
-    :params rnd: random number for shuffle batches
-    :params batch_size_
-    """
-    dataset = tf.data.TFRecordDataset(input_files)  # Load TFRecord data for either training or testing
-    dataset = dataset.map(decode_parse_fnV2)  
-    dataset = dataset.shuffle(rnd)
-    # dataset = dataset.repeat(1)
-    dataset = dataset.batch(batch_size_)
-    # iterator  = dataset.make_one_shot_iterator()
-    # iterator = dataset.make_initializable_iterator()
-    # Input_data, output_data,_ = iterator.get_next()
+def load_dataset(filenames):
+    ignore_order = tf.data.Options()
+    ignore_order.experimental_deterministic = False  # disable order, increase speed
+    dataset = tf.data.TFRecordDataset(
+        filenames
+    )  # automatically interleaves reads from multiple files
+    dataset = dataset.with_options(
+        ignore_order
+    )  # uses data as soon as it streams in, rather than in its original order
+    dataset = dataset.map(decode_parse_fn)
     return dataset
 
+def get_dataset(filenames,batchsize=128):
+    dataset = load_dataset(filenames)
+    # dataset = dataset.shuffle(2048)
+    dataset = dataset.prefetch(buffer_size= tf.data.AUTOTUNE)
+    dataset = dataset.batch(batchsize)
+    return dataset
+
+def Myplots(X_, y_,title):
+    """ Plot function with Inputs (values) and predictions with Predicted Labels
+    :params X_: input first data as 2D-specturm
+    :params y1_:  as output labels series (ie. predicts)
+    :params title: graph title
+    """
+    ax1 = plt.subplot(211)
+    plt.title(title)
+    sound = np.transpose(X_)
+    sound = 10. * np.log10(np.abs( sound)+1E-5)
+    plt.imshow(sound, cmap='jet', interpolation='nearest', aspect='auto')
+    plt.xlabel('Data series')
+    plt.ylabel('Frequency features in specific FFT Length')
+    plt.subplot(212, sharex = ax1)
+    plt.stem(y_)
+    plt.xlabel('Data series')
+    plt.ylabel('Class')
+    plt.xlim([0, np.size(y_)])
+    plt.show()
+    
 def decode_parse_fnV2(example_proto):
     """
     Return decode parse data from dataset into partial.
