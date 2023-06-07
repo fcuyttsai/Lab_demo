@@ -77,7 +77,7 @@ def decode_parse_fn(example_proto):
     :return (Intput_data,Output_data,Name_data)
     """
     features = {"Intput_data": tf.io.FixedLenFeature((), tf.string),
-                "Output_data": tf.io.FixedLenFeature((), tf.string),
+                "Output_data": tf.io.FixedLenFeature((), tf.int64),
                 "Name_data": tf.io.FixedLenFeature((), tf.string),
                 }
     parsed_features = tf.io.parse_single_example(example_proto, features)
