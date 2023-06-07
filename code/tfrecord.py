@@ -13,7 +13,7 @@ import scipy.signal as signal
 import scipy.io as sio
 import shutil
 import matplotlib.pyplot as plt
-from tensorflow import keras
+# from tensorflow import keras
 # from tensorflow.python.data.ops.dataset_ops import AUTOTUNE
 
 def load_dataset(filenames):
@@ -82,7 +82,7 @@ def decode_parse_fn(example_proto):
                 }
     parsed_features = tf.io.parse_single_example(example_proto, features)
     audo_spectrum=tf.io.decode_raw(parsed_features['Intput_data'], tf.float32)
-    seq_label=keras.utils.to_categorical(tf.io.decode_raw(parsed_features['Output_data'], tf.float32),10)
+    seq_label=tf.cast(tf.io.decode_raw(parsed_features['Output_data'], tf.float32),tf.int32)
     return audo_spectrum, seq_label#, parsed_features['Name_data']
 
 def save_tfrecords(Intput_data, Output_data, sname, dest_file):
