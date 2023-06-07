@@ -81,7 +81,7 @@ def decode_parse_fn(example_proto):
                 "Name_data": tf.io.FixedLenFeature((), tf.string),
                 }
     parsed_features = tf.io.parse_single_example(example_proto, features)
-    return tf.io.decode_raw(parsed_features['Intput_data'], tf.float32),tf.io.decode_raw(parsed_features['Output_data'], tf.int32)#, parsed_features['Name_data']
+    return tf.io.decode_raw(parsed_features['Intput_data'], tf.float32),tf.io.decode_raw(parsed_features['Output_data'], tf.float32)#, parsed_features['Name_data']
 
 def save_tfrecords(Intput_data, Output_data, sname, dest_file):
     """ 
