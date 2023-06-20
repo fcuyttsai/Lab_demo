@@ -54,6 +54,27 @@ def Myplots(X_, y_,title):
     plt.ylabel('Class')
     plt.xlim([0, np.size(y_)])
     plt.show()
+
+def Myplots_V2(X_, y_, y2_,title):
+    """ Plot function with Inputs (values) and predictions with Predicted Labels
+    :params X_: input first data as 2D-specturm
+    :params y1_:  as output labels series (ie. predicts)
+    :params title: graph title
+    """
+    ax1 = plt.subplot(211)
+    plt.title(title)
+    sound = np.transpose(X_)
+    sound = 10. * np.log10(np.abs( sound)+1E-5)
+    plt.imshow(sound, cmap='jet', interpolation='nearest', aspect='auto')
+    plt.xlabel('Data series')
+    plt.ylabel('Frequency features in specific FFT Length')
+    plt.subplot(212, sharex = ax1)
+    plt.stem(y_)
+    plt.stem(y2_,linefmt='r:',markerfmt='rx')
+    plt.xlabel('Data series')
+    plt.ylabel('Class')
+    plt.xlim([0, np.size(y_)])
+    plt.show()
     
 def decode_parse_fnV2(example_proto):
     """
